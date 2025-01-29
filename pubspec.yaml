@@ -1,0 +1,52 @@
+name: app_passo
+description: "A new Flutter project."
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+environment:
+  sdk: ^3.5.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+  board_datetime_picker: ^2.4.1
+
+  cupertino_icons: ^1.0.8
+  intl: ^0.17.0
+  numberpicker: ^2.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^4.0.0
+
+flutter:
+  fonts:
+    - family: JosefinSans-Bold
+      fonts:
+        - asset: fonts/JosefinSans-Bold.ttf
+
+    - family: JosefinSans-Light
+      fonts:
+        - asset: fonts/JosefinSans-Light.ttf
+
+    - family: JosefinSans-Medium
+      fonts:
+        - asset: fonts/JosefinSans-Medium.ttf
+
+    - family: JosefinSans-Regular
+      fonts:
+        - asset: fonts/JosefinSans-Regular.ttf
+
+    - family: JosefinSans-SemiBold
+      fonts:
+        - asset: fonts/JosefinSans-SemiBold.ttf
+
+    - family: JosefinSans-Thin
+      fonts:
+        - asset: fonts/JosefinSans-Thin.ttf
+
+  assets:
+    - assets/agregarAlarma.png
+
+  uses-material-design: true

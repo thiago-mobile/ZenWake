@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
-class SoundAlarm extends StatefulWidget {
+class SoundAlarm extends StatelessWidget {
   const SoundAlarm({super.key});
 
   @override
-  State<SoundAlarm> createState() => _SoundAlarmState();
-}
-
-class _SoundAlarmState extends State<SoundAlarm> {
-  @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Sound Alarm'),
+      ),
+      body: Center(
+        child: const Text('Sound Alarm Settings'),
+      ),
+    );
   }
 }

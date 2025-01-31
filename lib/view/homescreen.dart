@@ -1,8 +1,9 @@
 import 'dart:async';
-import 'package:app_passo/Widgets/waveclipper.dart';
-import 'package:app_passo/view/createAlarm.dart';
+import 'package:app_passo/classes/alarmmodel.dart';
+import 'package:app_passo/view/createalarm.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -14,7 +15,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String currentTime = DateFormat('HH:mm').format(DateTime.now());
   late Timer _timer;
-  bool isSwitched = false;
+  bool isSwitched = true;
 
   @override
   void initState() {
@@ -34,19 +35,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final alarmModel = Provider.of<AlarmModel>(context);
     return Scaffold(
       backgroundColor: const Color(0xff141414),
       appBar: AppBar(
-        backgroundColor: const Color(0xff2643d4),
-        title: const Padding(
-          padding: EdgeInsets.only(top: 35),
-          child: Center(
+        backgroundColor: const Color(0xff141414),
+        title: const Center(
+          child: Padding(
+            padding: EdgeInsets.only(top: 20),
             child: Text(
               'ZenWake',
               style: TextStyle(
-                color: Colors.white,
                 fontSize: 30,
                 fontFamily: 'JosefinSans-SemiBold',
+                color: Color(0xFFFFFFFF),
               ),
             ),
           ),
@@ -54,93 +56,92 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Stack(children: [
-            ClipPath(
-              clipper: WaveClipper(),
-              child: Container(
-                height: 80.0,
-                color: Color(0xff2643d4),
-              ),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 90),
-                  child: Center(
-                    child: Column(
-                      children: [
-                        Text(
-                          currentTime,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 70,
-                            fontFamily: 'JosefinSans-Light',
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(height: 50),
+              ...alarmModel.alarms.map((alarm) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CreateAlarm(existingAlarm: alarm),
+                      ),
+                    );
+                  },
+                  child: Card(
+                    color: alarm.isActive
+                        ? const Color(0xFF2E44AF)
+                        : const Color(0xff141414),
+                    elevation: 6,
+                    shadowColor: const Color(0xFF2643D4),
+                    margin: const EdgeInsets.all(5),
+                    child: ListTile(
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${alarm.selectedDays.entries.where((entry) => entry.value).map((entry) => entry.key).join(', ')}",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontFamily: 'JosefinSans-Regular',
+                            ),
                           ),
-                        ),
-                        const Divider(
+                          const SizedBox(height: 5),
+                          Text(
+                            "${alarm.hour}:${alarm.minute.toString().padLeft(2, '0')} ${alarm.timeFormat}",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 25,
+                              fontFamily: 'JosefinSans-Bold',
+                            ),
+                          ),
+                        ],
+                      ),
+                      subtitle: Text(
+                        alarm.subject,
+                        style: const TextStyle(
                           color: Colors.white,
-                          thickness: 2,
-                          indent: 40,
-                          endIndent: 40,
+                          fontSize: 20,
+                          fontFamily: 'JosefinSans-Light',
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                Card(
-                  color: const Color(0xFF2E44AF),
-                  elevation: 6,
-                  shadowColor:
-                      const Color(0xFF2643D4), // Añade sombra a la tarjeta
-                  margin: const EdgeInsets.all(10),
-                  child: ListTile(
-                    title: Text(
-                      currentTime,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontFamily: 'JosefinSans-SemiBold',
+                      ),
+                      trailing: Switch(
+                        value: alarm.isActive,
+                        onChanged: (value) {
+                          setState(() {
+                            alarmModel
+                                .toggleAlarm(alarmModel.alarms.indexOf(alarm));
+                            isSwitched = value;
+                          });
+                        },
+                        activeColor: Colors.blueAccent,
+                        focusColor: Colors.blueGrey,
+                        activeTrackColor: const Color(0xFF000000),
                       ),
                     ),
-                    subtitle: Text(
-                      DateFormat('EEEE')
-                          .format(DateTime.now()), // Muestra el día
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontFamily: 'JosefinSans-Light',
-                      ),
-                    ),
-                    trailing: Switch(
-                      value: isSwitched,
-                      onChanged: (value) {
-                        setState(() {
-                          isSwitched = value;
-                        });
-                      },
-                      activeColor: Colors.blueAccent,
-                      focusColor: Colors.blueGrey,
-                      activeTrackColor: Color(0xFF000000),
-                    ),
                   ),
-                ),
-              ],
-            ),
-          ]),
+                );
+              }).toList(),
+            ],
+          ),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.miniCenterFloat,
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.transparent,
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => CreateAlarm()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const CreateAlarm()));
         },
-        child: Image.asset('assets/agregarAlarma.png', width: 50, height: 50),
+        child: const Icon(
+          Icons.add_circle_rounded,
+          color: Colors.white,
+          size: 60,
+        ),
       ),
     );
   }

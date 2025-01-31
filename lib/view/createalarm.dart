@@ -1,10 +1,12 @@
-import 'package:app_passo/Widgets/waveclipper.dart';
+import 'package:app_passo/classes/alarmmodel.dart';
 import 'package:app_passo/view/sounalarm.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:provider/provider.dart';
 
 class CreateAlarm extends StatefulWidget {
-  const CreateAlarm({super.key});
+  final Alarm? existingAlarm;
+  const CreateAlarm({super.key, this.existingAlarm});
   @override
   _CreateAlarmState createState() => _CreateAlarmState();
 }
@@ -12,25 +14,45 @@ class CreateAlarm extends StatefulWidget {
 class _CreateAlarmState extends State<CreateAlarm> {
   double _currentVolume = 0.5;
   bool hayNotificacionPendiente = true;
-  var hour = 0;
-  var minute = 0;
-  var timeFormat = "AM";
-  final Map<String, bool> _selectedDays = {
-    'Lun': false,
-    'Mar': false,
-    'mier': false,
-    'jue': false,
-    'vie': false,
-    'sab': false,
-    'dom': false,
-  };
+  late int hour;
+  late int minute;
+  late String timeFormat;
+  late Map<String, bool> _selectedDays;
+  late String subject;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.existingAlarm != null) {
+      hour = widget.existingAlarm!.hour;
+      minute = widget.existingAlarm!.minute;
+      timeFormat = widget.existingAlarm!.timeFormat;
+      _selectedDays = Map.from(widget.existingAlarm!.selectedDays);
+      subject = widget.existingAlarm!.subject;
+    } else {
+      hour = 0;
+      minute = 0;
+      timeFormat = "AM";
+      _selectedDays = {
+        'Lun': false,
+        'Mar': false,
+        'mier': false,
+        'jue': false,
+        'vie': false,
+        'sab': false,
+        'dom': false,
+      };
+      subject = '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: const Color(0xff141414),
       appBar: AppBar(
-        backgroundColor: const Color(0xff2643d4),
+        backgroundColor: const Color(0xff141414),
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
@@ -41,7 +63,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
           },
         ),
         title: const Padding(
-          padding: EdgeInsets.only(top: 35),
+          padding: EdgeInsets.only(top: 10),
           child: Center(
             child: Text(
               'Create Alarm',
@@ -69,13 +91,6 @@ class _CreateAlarmState extends State<CreateAlarm> {
         child: SingleChildScrollView(
           child: Stack(
             children: [
-              ClipPath(
-                clipper: WaveClipper(),
-                child: Container(
-                  height: 100.0,
-                  color: const Color(0xff2643d4),
-                ),
-              ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -102,8 +117,8 @@ class _CreateAlarmState extends State<CreateAlarm> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            const TextField(
-                              decoration: InputDecoration(
+                            TextField(
+                              decoration: const InputDecoration(
                                 hintText: 'Asunto',
                                 hintStyle: TextStyle(
                                   color: Colors.grey,
@@ -111,11 +126,17 @@ class _CreateAlarmState extends State<CreateAlarm> {
                                   fontFamily: 'JosefinSans-Regular',
                                 ),
                               ),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 25,
                                 fontFamily: 'JosefinSans-Regular',
                               ),
+                              onChanged: (value) {
+                                setState(() {
+                                  subject = value;
+                                });
+                              },
+                              controller: TextEditingController(text: subject),
                             ),
                             Container(
                               child: Row(
@@ -124,7 +145,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
                                 children: [
                                   NumberPicker(
                                     minValue: 0,
-                                    maxValue: 12,
+                                    maxValue: 23,
                                     zeroPad: true,
                                     infiniteLoop: true,
                                     itemWidth: 70,
@@ -194,26 +215,15 @@ class _CreateAlarmState extends State<CreateAlarm> {
                                             timeFormat = "AM";
                                           });
                                         },
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 10),
-                                          decoration: BoxDecoration(
+                                        child: Text(
+                                          "AM",
+                                          style: TextStyle(
                                               color: timeFormat == "AM"
-                                                  ? const Color(0xff2643d4)
-                                                  : const Color(0xff141414),
-                                              border: Border.all(
-                                                color: timeFormat == "AM"
-                                                    ? const Color(0xff2643d4)
-                                                    : const Color(0xff141414),
-                                              )),
-                                          child: const Text(
-                                            "AM",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 25,
-                                                fontFamily:
-                                                    'JosefinSans-Regular'),
-                                          ),
+                                                  ? Colors.blue
+                                                  : Colors.white,
+                                              fontSize: 25,
+                                              fontFamily:
+                                                  'JosefinSans-Regular'),
                                         ),
                                       ),
                                       const SizedBox(
@@ -225,26 +235,15 @@ class _CreateAlarmState extends State<CreateAlarm> {
                                             timeFormat = "PM";
                                           });
                                         },
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 10),
-                                          decoration: BoxDecoration(
+                                        child: Text(
+                                          "PM",
+                                          style: TextStyle(
                                               color: timeFormat == "PM"
-                                                  ? const Color(0xff2643d4)
-                                                  : const Color(0xff141414),
-                                              border: Border.all(
-                                                color: timeFormat == "PM"
-                                                    ? const Color(0xff2643d4)
-                                                    : const Color(0xff141414),
-                                              )),
-                                          child: const Text(
-                                            "PM",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 25,
-                                                fontFamily:
-                                                    'JosefinSans-Regular'),
-                                          ),
+                                                  ? Colors.blue
+                                                  : Colors.white,
+                                              fontSize: 25,
+                                              fontFamily:
+                                                  'JosefinSans-Regular'),
                                         ),
                                       ),
                                     ],
@@ -270,13 +269,13 @@ class _CreateAlarmState extends State<CreateAlarm> {
                           });
                         },
                         child: Container(
-                          width: 47,
+                          width: 50,
                           height: 50,
                           decoration: BoxDecoration(
                             color: _selectedDays[day] == true
                                 ? const Color(0xff2643d4)
                                 : const Color(0xff2E313A),
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(50),
                           ),
                           child: Center(
                             child: Text(
@@ -292,7 +291,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
                       );
                     }).toList(),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   const Divider(
@@ -391,6 +390,46 @@ class _CreateAlarmState extends State<CreateAlarm> {
                   const Divider(
                     color: Color(0xff2643d4),
                     thickness: 2,
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF24D12C),
+                      fixedSize: const Size(70, 70),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    onPressed: () {
+                      final newAlarm = Alarm(
+                        subject: subject,
+                        hour: hour,
+                        minute: minute,
+                        timeFormat: timeFormat,
+                        selectedDays: _selectedDays,
+                      );
+                      if (widget.existingAlarm != null) {
+                        // Update existing alarm
+                        final alarmModel =
+                            Provider.of<AlarmModel>(context, listen: false);
+                        final index =
+                            alarmModel.alarms.indexOf(widget.existingAlarm!);
+                        alarmModel.alarms[index] = newAlarm;
+                        alarmModel.notifyListeners();
+                      } else {
+                        // Add new alarm
+                        Provider.of<AlarmModel>(context, listen: false)
+                            .addAlarm(newAlarm);
+                      }
+                      Navigator.pop(context);
+                    },
+                    child: const Icon(
+                      Icons.check,
+                      color: Colors.white,
+                      size: 30,
+                    ),
                   ),
                 ],
               ),

@@ -19,6 +19,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
   late String timeFormat;
   late Map<String, bool> _selectedDays;
   late String subject;
+  late TextEditingController _subjectController;
 
   @override
   void initState() {
@@ -44,6 +45,13 @@ class _CreateAlarmState extends State<CreateAlarm> {
       };
       subject = '';
     }
+    _subjectController = TextEditingController(text: subject);
+  }
+
+  @override
+  void dispose() {
+    _subjectController.dispose();
+    super.dispose();
   }
 
   @override
@@ -96,168 +104,113 @@ class _CreateAlarmState extends State<CreateAlarm> {
                 children: [
                   const SizedBox(height: 40), // Espacio debajo de la AppBar
                   Center(
-                    child: Container(
-                      width: 300,
-                      height: 270,
-                      decoration: BoxDecoration(
-                        color: const Color(0xff141414),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0xff2643d4),
-                            spreadRadius: 5,
-                            blurRadius: 7,
-                            offset:
-                                Offset(0, 3), // Cambia la posición de la sombra
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                NumberPicker(
+                                  minValue: 0,
+                                  maxValue: 23,
+                                  zeroPad: true,
+                                  infiniteLoop: true,
+                                  itemWidth: 70,
+                                  itemHeight: 60,
+                                  value: hour,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      hour = value;
+                                    });
+                                  },
+                                  textStyle: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 48,
+                                    fontFamily: 'JosefinSans-Regular',
+                                  ),
+                                  selectedTextStyle: const TextStyle(
+                                    color: Colors.blue,
+                                    fontSize: 55,
+                                    fontFamily: 'JosefinSans-Regular',
+                                  ),
+                                ),
+                                NumberPicker(
+                                  minValue: 0,
+                                  maxValue: 59,
+                                  value: minute,
+                                  zeroPad: true,
+                                  infiniteLoop: true,
+                                  itemWidth: 70,
+                                  itemHeight: 60,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      minute = value;
+                                    });
+                                  },
+                                  textStyle: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 48,
+                                    fontFamily: 'JosefinSans-Regular',
+                                  ),
+                                  selectedTextStyle: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 55,
+                                    fontFamily: 'JosefinSans-Regular',
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            TextField(
-                              decoration: const InputDecoration(
-                                hintText: 'Asunto',
-                                hintStyle: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 20,
-                                  fontFamily: 'JosefinSans-Regular',
-                                ),
-                              ),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 25,
-                                fontFamily: 'JosefinSans-Regular',
-                              ),
-                              onChanged: (value) {
-                                setState(() {
-                                  subject = value;
-                                });
-                              },
-                              controller: TextEditingController(text: subject),
-                            ),
-                            Container(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  NumberPicker(
-                                    minValue: 0,
-                                    maxValue: 23,
-                                    zeroPad: true,
-                                    infiniteLoop: true,
-                                    itemWidth: 70,
-                                    itemHeight: 60,
-                                    value: hour,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        hour = value;
-                                      });
-                                    },
-                                    textStyle: const TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 20,
-                                      fontFamily: 'JosefinSans-Regular',
-                                    ),
-                                    selectedTextStyle: const TextStyle(
-                                      color: Colors.blue,
-                                      fontSize: 30,
-                                      fontFamily: 'JosefinSans-Regular',
-                                    ),
-                                    decoration: const BoxDecoration(
-                                      border: Border(
-                                          top: BorderSide(
-                                            color: Colors.white,
-                                          ),
-                                          bottom:
-                                              BorderSide(color: Colors.white)),
-                                    ),
-                                  ),
-                                  NumberPicker(
-                                    minValue: 0,
-                                    maxValue: 59,
-                                    value: minute,
-                                    zeroPad: true,
-                                    infiniteLoop: true,
-                                    itemWidth: 70,
-                                    itemHeight: 60,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        minute = value;
-                                      });
-                                    },
-                                    textStyle: const TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 20,
-                                      fontFamily: 'JosefinSans-Regular',
-                                    ),
-                                    selectedTextStyle: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 30,
-                                      fontFamily: 'JosefinSans-Regular',
-                                    ),
-                                    decoration: const BoxDecoration(
-                                      border: Border(
-                                          top: BorderSide(
-                                            color: Colors.white,
-                                          ),
-                                          bottom:
-                                              BorderSide(color: Colors.white)),
-                                    ),
-                                  ),
-                                  Column(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            timeFormat = "AM";
-                                          });
-                                        },
-                                        child: Text(
-                                          "AM",
-                                          style: TextStyle(
-                                              color: timeFormat == "AM"
-                                                  ? Colors.blue
-                                                  : Colors.white,
-                                              fontSize: 25,
-                                              fontFamily:
-                                                  'JosefinSans-Regular'),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 15,
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            timeFormat = "PM";
-                                          });
-                                        },
-                                        child: Text(
-                                          "PM",
-                                          style: TextStyle(
-                                              color: timeFormat == "PM"
-                                                  ? Colors.blue
-                                                  : Colors.white,
-                                              fontSize: 25,
-                                              fontFamily:
-                                                  'JosefinSans-Regular'),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
                     ),
                   ),
                   const SizedBox(
-                    height: 40,
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: _subjectController,
+                      decoration: const InputDecoration(
+                        hintText: 'Asunto',
+                        focusColor: Colors.blue,
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          decorationColor: Colors.blue,
+                          fontSize: 20,
+                          fontFamily: 'JosefinSans-Regular',
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.blue, // Color azul al enfocar
+                          ),
+                        ),
+                        border: InputBorder.none,
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 25,
+                        fontFamily: 'JosefinSans-Regular',
+                      ),
+                      textAlign: TextAlign.start,
+                      onChanged: (value) {
+                        setState(() {
+                          subject = value;
+                        });
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -269,8 +222,8 @@ class _CreateAlarmState extends State<CreateAlarm> {
                           });
                         },
                         child: Container(
-                          width: 50,
-                          height: 50,
+                          width: 40,
+                          height: 40,
                           decoration: BoxDecoration(
                             color: _selectedDays[day] == true
                                 ? const Color(0xff2643d4)
@@ -294,14 +247,10 @@ class _CreateAlarmState extends State<CreateAlarm> {
                   const SizedBox(
                     height: 20,
                   ),
-                  const Divider(
-                    color: Color(0xff2643d4),
-                    thickness: 2,
-                  ),
                   Stack(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(right: 280),
+                        padding: EdgeInsets.only(right: 280),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -324,7 +273,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
                               child: const Text(
                                 'Default',
                                 style: TextStyle(
-                                  color: Colors.grey,
+                                  color: Colors.blue,
                                   fontSize: 15,
                                   fontFamily: 'JosefinSans-Light',
                                 ),
@@ -336,42 +285,8 @@ class _CreateAlarmState extends State<CreateAlarm> {
                     ],
                   ),
                   const Divider(
-                    color: Color(0xff2643d4),
+                    color: Colors.grey,
                     thickness: 1,
-                  ),
-                  Row(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'Volumen',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontFamily: 'JosefinSans-SemiBold',
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Slider(
-                          value: _currentVolume,
-                          min: 0,
-                          max: 1,
-                          divisions: 10,
-                          onChanged: (double value) {
-                            setState(() {
-                              _currentVolume = value;
-                            });
-                          },
-                          activeColor: const Color(0xff2643d4),
-                          inactiveColor: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Divider(
-                    color: Color(0xff2643d4),
-                    thickness: 2,
                   ),
                   const SizedBox(
                     height: 50,

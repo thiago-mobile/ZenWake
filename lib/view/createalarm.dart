@@ -300,62 +300,44 @@ class _CreateAlarmState extends State<CreateAlarm> {
                   ),
                   Stack(
                     children: [
-                      Row(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
+                      Padding(
+                        padding: const EdgeInsets.only(right: 280),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
                               'Sonido',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
-                                fontFamily: 'JosefinSans-SemiBold',
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 190,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const SoundAlarm()),
-                              );
-                            },
-                            child: const Text(
-                              'Default',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 20,
                                 fontFamily: 'JosefinSans-Regular',
                               ),
                             ),
-                          ),
-                          if (hayNotificacionPendiente)
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: 25,
-                                left:
-                                    0, // Ajusta el valor para subir el punto rojo
-                              ),
-                              child: Container(
-                                width: 10,
-                                height: 10,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.blue,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const SoundAlarm()),
+                                );
+                              },
+                              child: const Text(
+                                'Default',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 15,
+                                  fontFamily: 'JosefinSans-Light',
                                 ),
                               ),
                             ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
                   const Divider(
                     color: Color(0xff2643d4),
-                    thickness: 2,
+                    thickness: 1,
                   ),
                   Row(
                     children: [
@@ -396,7 +378,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF24D12C),
+                      backgroundColor: const Color(0xff2643d4),
                       fixedSize: const Size(70, 70),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),

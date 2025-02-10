@@ -16,6 +16,7 @@ dependencies:
   provider: ^6.1.2
   audioplayers: ^6.1.1
   shared_preferences: ^2.5.1
+  lottie: ^3.3.1
 
 dev_dependencies:
   flutter_test:
@@ -51,5 +52,6 @@ flutter:
 
   assets:
     - assets/agregarAlarma.png
+    - assets/alarma.json
 
   uses-material-design: true

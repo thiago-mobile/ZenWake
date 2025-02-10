@@ -20,6 +20,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    Provider.of<AlarmModel>(context, listen: false).loadAlarms();
     _timer = Timer.periodic(const Duration(seconds: 60), (Timer timer) {
       setState(() {
         currentTime = DateFormat('HH:mm').format(DateTime.now());
@@ -31,6 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     _timer.cancel();
     super.dispose();
+    Provider.of<AlarmModel>(context, listen: false).saveAlarms();
   }
 
   @override

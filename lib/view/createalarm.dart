@@ -198,8 +198,8 @@ class _CreateAlarmState extends State<CreateAlarm> {
                       ),
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 25,
-                        fontFamily: 'JosefinSans-Regular',
+                        fontSize: 20,
+                        fontFamily: 'JosefinSans-Light',
                       ),
                       textAlign: TextAlign.start,
                       onChanged: (value) {
@@ -294,7 +294,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xff2643d4),
-                      fixedSize: const Size(70, 70),
+                      fixedSize: const Size(100, 70),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
@@ -325,7 +325,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
                     child: const Icon(
                       Icons.check,
                       color: Colors.white,
-                      size: 30,
+                      size: 40,
                     ),
                   ),
                 ],

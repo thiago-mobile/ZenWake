@@ -15,6 +15,7 @@ dependencies:
   numberpicker: ^2.1.2
   provider: ^6.1.2
   audioplayers: ^6.1.1
+  shared_preferences: ^2.5.1
 
 dev_dependencies:
   flutter_test:

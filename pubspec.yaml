@@ -53,5 +53,10 @@ flutter:
   assets:
     - assets/agregarAlarma.png
     - assets/alarma.json
+    - assets/Cascada.mp3
+    - assets/lluvia.mp3
+    - assets/olas_de_mar.mp3
+    - assets/pajaros.mp3
+    - assets/lluvia_relajacion.mp3
 
   uses-material-design: true

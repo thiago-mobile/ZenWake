@@ -11,6 +11,7 @@ class Alarm {
   String timeFormat;
   Map<String, bool> selectedDays;
   bool isActive;
+  String selectedTone;
 
   Alarm({
     required this.subject,
@@ -19,6 +20,7 @@ class Alarm {
     required this.timeFormat,
     required this.selectedDays,
     this.isActive = false,
+    required this.selectedTone,
   });
 
   // Convertir a JSON
@@ -30,6 +32,7 @@ class Alarm {
       'timeFormat': timeFormat,
       'selectedDays': selectedDays,
       'isActive': isActive,
+      'selectedTone': selectedTone,
     });
   }
 
@@ -43,6 +46,7 @@ class Alarm {
       timeFormat: json['timeFormat'],
       selectedDays: Map<String, bool>.from(json['selectedDays']),
       isActive: json['isActive'],
+      selectedTone: json['selectedTone'],
     );
   }
 }

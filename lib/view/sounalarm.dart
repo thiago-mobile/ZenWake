@@ -2,15 +2,29 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 class SoundAlarm extends StatefulWidget {
-  const SoundAlarm({super.key});
+  final String initialTone;
+  const SoundAlarm({super.key, required this.initialTone});
 
   @override
   State<SoundAlarm> createState() => _SoundAlarmState();
 }
 
 class _SoundAlarmState extends State<SoundAlarm> {
-  String selectedTone = 'Cascada';
+  late String selectedTone;
   double _currentVolume = 0.5;
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  @override
+  void initState() {
+    super.initState();
+    selectedTone = widget.initialTone;
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +39,7 @@ class _SoundAlarmState extends State<SoundAlarm> {
             color: Colors.white,
           ),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, selectedTone);
           },
         ),
         title: const Padding(
@@ -101,21 +115,18 @@ class _SoundAlarmState extends State<SoundAlarm> {
                                 fontFamily: 'JosefinSans-Regular',
                               ),
                             ),
-                            trailing: IconButton(
-                              icon: Icon(
-                                Icons.check_circle,
-                                color: selectedTone == 'Cascada'
-                                    ? Colors.blue
-                                    : Colors.grey, // Cambio de color
-                              ),
-                              onPressed: () {
-                                setState(
-                                  () {
-                                    selectedTone = 'Cascada';
-                                  },
-                                );
-                              },
+                            trailing: Icon(
+                              Icons.check_circle,
+                              color: selectedTone == 'Cascada'
+                                  ? Colors.blue
+                                  : Colors.grey, // Cambio de color
                             ),
+                            onTap: () {
+                              setState(() {
+                                selectedTone = 'Cascada';
+                                _audioPlayer.play(AssetSource('Cascada.mp3'));
+                              });
+                            },
                           ),
                           ListTile(
                             title: const Text(
@@ -126,21 +137,20 @@ class _SoundAlarmState extends State<SoundAlarm> {
                                 fontFamily: 'JosefinSans-Regular',
                               ),
                             ),
-                            trailing: IconButton(
-                              icon: Icon(
-                                Icons.check_circle,
-                                color: selectedTone == 'Lluvia'
-                                    ? Colors.blue
-                                    : Colors.grey, // Cambio de color
-                              ),
-                              onPressed: () {
-                                setState(
-                                  () {
-                                    selectedTone = 'Lluvia';
-                                  },
-                                );
-                              },
+                            trailing: Icon(
+                              Icons.check_circle,
+                              color: selectedTone == 'Lluvia'
+                                  ? Colors.blue
+                                  : Colors.grey, // Cambio de color
                             ),
+                            onTap: () {
+                              setState(
+                                () {
+                                  selectedTone = 'Lluvia';
+                                  _audioPlayer.play(AssetSource('lluvia.mp3'));
+                                },
+                              );
+                            },
                           ),
                           ListTile(
                             title: const Text(
@@ -151,19 +161,18 @@ class _SoundAlarmState extends State<SoundAlarm> {
                                 fontFamily: 'JosefinSans-Regular',
                               ),
                             ),
-                            trailing: IconButton(
-                              icon: Icon(
-                                Icons.check_circle,
-                                color: selectedTone == 'Pajaros'
-                                    ? Colors.blue
-                                    : Colors.grey, // Cambio de color
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  selectedTone = 'Pajaros';
-                                });
-                              },
+                            trailing: Icon(
+                              Icons.check_circle,
+                              color: selectedTone == 'Pajaros'
+                                  ? Colors.blue
+                                  : Colors.grey, // Cambio de color
                             ),
+                            onTap: () {
+                              setState(() {
+                                selectedTone = 'Pajaros';
+                                _audioPlayer.play(AssetSource('pajaros.mp3'));
+                              });
+                            },
                           ),
                           ListTile(
                             title: const Text(
@@ -174,19 +183,42 @@ class _SoundAlarmState extends State<SoundAlarm> {
                                 fontFamily: 'JosefinSans-Regular',
                               ),
                             ),
-                            trailing: IconButton(
-                              icon: Icon(
-                                Icons.check_circle,
-                                color: selectedTone == 'Olas del Mar'
-                                    ? Colors.blue
-                                    : Colors.grey, // Cambio de color
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  selectedTone = 'Olas del Mar';
-                                });
-                              },
+                            trailing: Icon(
+                              Icons.check_circle,
+                              color: selectedTone == 'Olas del Mar'
+                                  ? Colors.blue
+                                  : Colors.grey, // Cambio de color
                             ),
+                            onTap: () {
+                              setState(() {
+                                selectedTone = 'Olas del Mar';
+                                _audioPlayer
+                                    .play(AssetSource('olas_de_mar.mp3'));
+                              });
+                            },
+                          ),
+                          ListTile(
+                            title: const Text(
+                              'Relajacion Melodia',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontFamily: 'JosefinSans-Regular',
+                              ),
+                            ),
+                            trailing: Icon(
+                              Icons.check_circle,
+                              color: selectedTone == 'Relajacion Melodia'
+                                  ? Colors.blue
+                                  : Colors.grey, // Cambio de color
+                            ),
+                            onTap: () {
+                              setState(() {
+                                selectedTone = 'Relajacion Melodia';
+                                _audioPlayer
+                                    .play(AssetSource('lluvia_relajacion.mp3'));
+                              });
+                            },
                           ),
                         ],
                       ),
@@ -266,6 +298,7 @@ class _SoundAlarmState extends State<SoundAlarm> {
                               onChanged: (double value) {
                                 setState(() {
                                   _currentVolume = value;
+                                  _audioPlayer.setVolume(_currentVolume);
                                 });
                               },
                               activeColor: const Color(0xff2643d4),

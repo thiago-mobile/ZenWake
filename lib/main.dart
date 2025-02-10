@@ -27,7 +27,9 @@ class MyApp extends StatelessWidget {
       routes: {
         '/createalarm': (context) => const CreateAlarm(),
         '/homescreen': (context) => const MyHomePage(),
-        '/soundalarm': (context) => const SoundAlarm(),
+        '/soundalarm': (context) => const SoundAlarm(
+              initialTone: '',
+            ),
       },
     );
   }

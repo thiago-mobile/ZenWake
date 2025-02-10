@@ -1,4 +1,5 @@
 import 'package:app_passo/classes/alarmmodel.dart';
+import 'package:app_passo/view/alarmscreen.dart';
 import 'package:app_passo/view/sounalarm.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
@@ -19,6 +20,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
   late String timeFormat;
   late Map<String, bool> _selectedDays;
   late String subject;
+  late String selectedTone;
   late TextEditingController _subjectController;
 
   @override
@@ -30,6 +32,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
       timeFormat = widget.existingAlarm!.timeFormat;
       _selectedDays = Map.from(widget.existingAlarm!.selectedDays);
       subject = widget.existingAlarm!.subject;
+      selectedTone = widget.existingAlarm!.selectedTone;
     } else {
       hour = 0;
       minute = 0;
@@ -44,6 +47,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
         'dom': false,
       };
       subject = '';
+      selectedTone = 'Cascada';
     }
     _subjectController = TextEditingController(text: subject);
   }
@@ -85,14 +89,14 @@ class _CreateAlarmState extends State<CreateAlarm> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(
-              Icons.delete,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              // Acción al presionar el ícono
-            },
-          ),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Alarmscreen()));
+              },
+              icon: Icon(
+                Icons.view_comfy_alt_rounded,
+                color: Colors.white,
+              ))
         ],
       ),
       body: SafeArea(
@@ -250,7 +254,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
                   Stack(
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(right: 280),
+                        padding: const EdgeInsets.only(right: 280),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -263,18 +267,26 @@ class _CreateAlarmState extends State<CreateAlarm> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {
-                                Navigator.push(
+                              onTap: () async {
+                                final result = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const SoundAlarm()),
+                                    builder: (context) => SoundAlarm(
+                                      initialTone: selectedTone,
+                                    ),
+                                  ),
                                 );
+                                if (result != null) {
+                                  setState(() {
+                                    selectedTone = result;
+                                  });
+                                }
                               },
-                              child: const Text(
-                                'Default',
-                                style: TextStyle(
+                              child: Text(
+                                selectedTone,
+                                style: const TextStyle(
                                   color: Colors.blue,
-                                  fontSize: 15,
+                                  fontSize: 13,
                                   fontFamily: 'JosefinSans-Light',
                                 ),
                               ),
@@ -306,9 +318,12 @@ class _CreateAlarmState extends State<CreateAlarm> {
                         minute: minute,
                         timeFormat: timeFormat,
                         selectedDays: _selectedDays,
+                        selectedTone:
+                            selectedTone, // Aquí se guarda el tono actualizado
                       );
+
                       if (widget.existingAlarm != null) {
-                        // Update existing alarm
+                        // Si ya hay una alarma existente, actualizamos la alarma
                         final alarmModel =
                             Provider.of<AlarmModel>(context, listen: false);
                         final index =
@@ -316,10 +331,11 @@ class _CreateAlarmState extends State<CreateAlarm> {
                         alarmModel.alarms[index] = newAlarm;
                         alarmModel.notifyListeners();
                       } else {
-                        // Add new alarm
+                        // Si es una nueva alarma, la agregamos
                         Provider.of<AlarmModel>(context, listen: false)
                             .addAlarm(newAlarm);
                       }
+
                       Navigator.pop(context);
                     },
                     child: const Icon(

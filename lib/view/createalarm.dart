@@ -2,6 +2,7 @@ import 'package:app_passo/classes/alarmmodel.dart';
 import 'package:app_passo/view/alarmscreen.dart';
 import 'package:app_passo/view/sounalarm.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +23,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
   late String subject;
   late String selectedTone;
   late TextEditingController _subjectController;
+  bool _showLottie = false;
 
   @override
   void initState() {
@@ -90,8 +92,11 @@ class _CreateAlarmState extends State<CreateAlarm> {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Alarmscreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            Alarmscreen(alarm: widget.existingAlarm)));
               },
               icon: Icon(
                 Icons.view_comfy_alt_rounded,
@@ -106,7 +111,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 40), // Espacio debajo de la AppBar
+                  const SizedBox(height: 40),
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -172,9 +177,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
@@ -184,13 +187,12 @@ class _CreateAlarmState extends State<CreateAlarm> {
                         focusColor: Colors.blue,
                         hintStyle: TextStyle(
                           color: Colors.grey,
-                          decorationColor: Colors.blue,
                           fontSize: 20,
                           fontFamily: 'JosefinSans-Regular',
                         ),
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
-                            color: Colors.blue, // Color azul al enfocar
+                            color: Colors.blue,
                           ),
                         ),
                         border: InputBorder.none,
@@ -213,9 +215,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
                       },
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: _selectedDays.keys.map((day) {
@@ -248,9 +248,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
                       );
                     }).toList(),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 20),
                   Stack(
                     children: [
                       Padding(
@@ -300,49 +298,68 @@ class _CreateAlarmState extends State<CreateAlarm> {
                     color: Colors.grey,
                     thickness: 1,
                   ),
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xff2643d4),
-                      fixedSize: const Size(100, 70),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
+                  const SizedBox(height: 50),
+                  Stack(
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF4159D1),
+                          fixedSize: const Size(130, 60),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(40),
+                          ),
+                        ),
+                        onPressed: () async {
+                          setState(() {
+                            _showLottie = true; // Mostrar la animación
+                          });
+
+                          // Esperar 2 segundos antes de proceder
+                          await Future.delayed(Duration(seconds: 2));
+
+                          final newAlarm = Alarm(
+                            subject: subject,
+                            hour: hour,
+                            minute: minute,
+                            timeFormat: timeFormat,
+                            selectedDays: _selectedDays,
+                            selectedTone: selectedTone,
+                          );
+
+                          if (widget.existingAlarm != null) {
+                            // Actualizar alarma existente
+                            final alarmModel =
+                                Provider.of<AlarmModel>(context, listen: false);
+                            final index = alarmModel.alarms
+                                .indexOf(widget.existingAlarm!);
+                            alarmModel.alarms[index] = newAlarm;
+                            alarmModel.notifyListeners();
+                          } else {
+                            // Agregar nueva alarma
+                            Provider.of<AlarmModel>(context, listen: false)
+                                .addAlarm(newAlarm);
+                          }
+
+                          Navigator.pop(context);
+                        },
+                        child: const Icon(
+                          Icons.check,
+                          color: Colors.white,
+                          size: 25,
+                        ),
                       ),
-                    ),
-                    onPressed: () {
-                      final newAlarm = Alarm(
-                        subject: subject,
-                        hour: hour,
-                        minute: minute,
-                        timeFormat: timeFormat,
-                        selectedDays: _selectedDays,
-                        selectedTone:
-                            selectedTone, // Aquí se guarda el tono actualizado
-                      );
-
-                      if (widget.existingAlarm != null) {
-                        // Si ya hay una alarma existente, actualizamos la alarma
-                        final alarmModel =
-                            Provider.of<AlarmModel>(context, listen: false);
-                        final index =
-                            alarmModel.alarms.indexOf(widget.existingAlarm!);
-                        alarmModel.alarms[index] = newAlarm;
-                        alarmModel.notifyListeners();
-                      } else {
-                        // Si es una nueva alarma, la agregamos
-                        Provider.of<AlarmModel>(context, listen: false)
-                            .addAlarm(newAlarm);
-                      }
-
-                      Navigator.pop(context);
-                    },
-                    child: const Icon(
-                      Icons.check,
-                      color: Colors.white,
-                      size: 40,
-                    ),
+                      if (_showLottie)
+                        Positioned.fill(
+                          child: Center(
+                            child: Lottie.asset(
+                              'assets/check.json', // Asegúrate de tener la animación en esta ruta
+                              width: 60, // Más grande
+                              height: 60, // Más grande
+                              repeat: false,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ],
               ),

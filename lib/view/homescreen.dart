@@ -31,7 +31,23 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         currentTime = DateFormat('HH:mm').format(DateTime.now());
       });
+      for (var alarm
+          in Provider.of<AlarmModel>(context, listen: false).alarms) {
+        if (alarm.hour == DateTime.now().hour &&
+            alarm.minute == DateTime.now().minute) {
+          _triggerAlarm(alarm);
+        }
+      }
     });
+  }
+
+  void _triggerAlarm(Alarm alarm) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Alarmscreen(alarm: alarm),
+      ),
+    );
   }
 
   @override
@@ -292,16 +308,22 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButtonLocation:
           FloatingActionButtonLocation.miniCenterFloat,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.transparent,
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const CreateAlarm()));
-        },
-        child: const Icon(
-          Icons.add_circle,
-          color: Colors.white,
-          size: 60,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: FloatingActionButton(
+          backgroundColor: const Color(0xFF090B12),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const CreateAlarm()),
+            );
+          },
+          child: Lottie.asset(
+            'assets/add_alarm.json',
+            width: 70,
+            height: 70,
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );

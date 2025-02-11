@@ -108,7 +108,7 @@ class _SoundAlarmState extends State<SoundAlarm> {
                         children: [
                           ListTile(
                             title: const Text(
-                              'Cascada',
+                              'cascada',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
@@ -130,7 +130,7 @@ class _SoundAlarmState extends State<SoundAlarm> {
                           ),
                           ListTile(
                             title: const Text(
-                              'Lluvia',
+                              'lluvia',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
@@ -139,14 +139,14 @@ class _SoundAlarmState extends State<SoundAlarm> {
                             ),
                             trailing: Icon(
                               Icons.check_circle,
-                              color: selectedTone == 'Lluvia'
+                              color: selectedTone == 'lluvia'
                                   ? Colors.blue
                                   : Colors.grey, // Cambio de color
                             ),
                             onTap: () {
                               setState(
                                 () {
-                                  selectedTone = 'Lluvia';
+                                  selectedTone = 'lluvia';
                                   _audioPlayer.play(AssetSource('lluvia.mp3'));
                                 },
                               );
@@ -163,13 +163,13 @@ class _SoundAlarmState extends State<SoundAlarm> {
                             ),
                             trailing: Icon(
                               Icons.check_circle,
-                              color: selectedTone == 'Pajaros'
+                              color: selectedTone == 'pajaros'
                                   ? Colors.blue
                                   : Colors.grey, // Cambio de color
                             ),
                             onTap: () {
                               setState(() {
-                                selectedTone = 'Pajaros';
+                                selectedTone = 'pajaros';
                                 _audioPlayer.play(AssetSource('pajaros.mp3'));
                               });
                             },
@@ -185,13 +185,13 @@ class _SoundAlarmState extends State<SoundAlarm> {
                             ),
                             trailing: Icon(
                               Icons.check_circle,
-                              color: selectedTone == 'Olas del Mar'
+                              color: selectedTone == 'olas del Mar'
                                   ? Colors.blue
                                   : Colors.grey, // Cambio de color
                             ),
                             onTap: () {
                               setState(() {
-                                selectedTone = 'Olas del Mar';
+                                selectedTone = 'olas_de_mar';
                                 _audioPlayer
                                     .play(AssetSource('olas_de_mar.mp3'));
                               });
@@ -208,13 +208,13 @@ class _SoundAlarmState extends State<SoundAlarm> {
                             ),
                             trailing: Icon(
                               Icons.check_circle,
-                              color: selectedTone == 'Relajacion Melodia'
+                              color: selectedTone == 'lluvia_relajacion'
                                   ? Colors.blue
                                   : Colors.grey, // Cambio de color
                             ),
                             onTap: () {
                               setState(() {
-                                selectedTone = 'Relajacion Melodia';
+                                selectedTone = 'lluvia_relajacion';
                                 _audioPlayer
                                     .play(AssetSource('lluvia_relajacion.mp3'));
                               });

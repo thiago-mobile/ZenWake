@@ -3,15 +3,43 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 class Alarmscreen extends StatefulWidget {
-  const Alarmscreen({
-    super.key,
-  });
+  final Alarm? alarm;
+  const Alarmscreen({Key? key, required this.alarm}) : super(key: key);
 
   @override
   State<Alarmscreen> createState() => _AlarmscreenState();
 }
 
 class _AlarmscreenState extends State<Alarmscreen> {
+  late AudioPlayer _audioPlayer;
+  @override
+  void initState() {
+    super.initState();
+    _audioPlayer = AudioPlayer();
+
+    // Reproducir el tono de la alarma
+    _playAlarmTone();
+  }
+
+  void _playAlarmTone() async {
+    String soundPath =
+        '${widget.alarm?.selectedTone}.mp3'; // No agregar 'assets/' aquí
+    await _audioPlayer.setSource(AssetSource(soundPath));
+    _audioPlayer.setVolume(1.0);
+    _audioPlayer.resume();
+  }
+
+  void _stopAlarm() {
+    _audioPlayer.stop();
+    Navigator.pop(context); // Volver a la pantalla principal
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -28,7 +56,9 @@ class _AlarmscreenState extends State<Alarmscreen> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                _stopAlarm();
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),

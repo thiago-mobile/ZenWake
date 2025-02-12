@@ -1,8 +1,9 @@
-import 'package:app_passo/classes/alarmmodel.dart';
+import 'package:app_passo/models/alarmmodel.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:slide_to_act/slide_to_act.dart';
+import 'package:vibration/vibration.dart';
 
 class Alarmscreen extends StatefulWidget {
   final Alarm? alarm;
@@ -24,6 +25,14 @@ class _AlarmscreenState extends State<Alarmscreen> {
   }
 
   void _playAlarmTone() async {
+    if (widget.alarm?.isVibrationEnabled ?? false) {
+      // Verificar si el dispositivo puede vibrar
+      bool? canVibrate = await Vibration.hasVibrator();
+      if (canVibrate == true) {
+        Vibration.vibrate(
+            pattern: [200, 1000, 200, 1000]); // Patrón de vibración
+      }
+    }
     String soundPath =
         '${widget.alarm?.selectedTone}.mp3'; // No agregar 'assets/' aquí
     await _audioPlayer.setSource(AssetSource(soundPath));
@@ -33,6 +42,7 @@ class _AlarmscreenState extends State<Alarmscreen> {
 
   void _stopAlarm() {
     _audioPlayer.stop();
+    Vibration.cancel();
     Navigator.pop(context); // Volver a la pantalla principal
   }
 

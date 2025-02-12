@@ -12,6 +12,7 @@ class Alarm {
   Map<String, bool> selectedDays;
   bool isActive;
   String selectedTone;
+  bool isVibrationEnabled;
 
   Alarm({
     required this.subject,
@@ -21,6 +22,7 @@ class Alarm {
     required this.selectedDays,
     this.isActive = false,
     required this.selectedTone,
+    this.isVibrationEnabled = false,
   });
 
   // Convertir a JSON
@@ -33,6 +35,7 @@ class Alarm {
       'selectedDays': selectedDays,
       'isActive': isActive,
       'selectedTone': selectedTone,
+      'isVibrationEnabled': isVibrationEnabled,
     });
   }
 
@@ -47,6 +50,7 @@ class Alarm {
       selectedDays: Map<String, bool>.from(json['selectedDays']),
       isActive: json['isActive'],
       selectedTone: json['selectedTone'],
+      isVibrationEnabled: json['isVibrationEnabled'] ?? false,
     );
   }
 }

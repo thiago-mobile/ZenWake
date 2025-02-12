@@ -1,4 +1,4 @@
-import 'package:app_passo/classes/alarmmodel.dart';
+import 'package:app_passo/models/alarmmodel.dart';
 import 'package:app_passo/view/createalarm.dart';
 import 'package:app_passo/view/homescreen.dart';
 import 'package:app_passo/view/sounalarm.dart';

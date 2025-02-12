@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'package:app_passo/classes/alarmmodel.dart';
+import 'package:app_passo/models/alarmmodel.dart';
 import 'package:app_passo/view/alarmscreen.dart';
 import 'package:app_passo/view/createalarm.dart';
+import 'package:app_passo/view/weather.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -140,6 +141,22 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const SizedBox(height: 40),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const WeatherScreen()));
+                },
+                child: Text(
+                  'Clima',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 20,
+                    fontFamily: 'JosefinSans-SemiBold',
+                  ),
+                ),
+              ),
               Container(
                 width: 170,
                 height: 80,

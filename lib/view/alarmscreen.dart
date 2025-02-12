@@ -1,6 +1,8 @@
 import 'package:app_passo/classes/alarmmodel.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:slide_to_act/slide_to_act.dart';
 
 class Alarmscreen extends StatefulWidget {
   final Alarm? alarm;
@@ -42,30 +44,63 @@ class _AlarmscreenState extends State<Alarmscreen> {
 
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xff141414),
       appBar: AppBar(
-        title: const Text("¡Alarma Sonando!"),
-        backgroundColor: Colors.red,
+        automaticallyImplyLeading: false,
+        backgroundColor: const Color(0xff141414),
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const Text(
-              "¡La alarma está sonando!",
-              style: TextStyle(color: Colors.red, fontSize: 24),
+            SizedBox(
+              height: 50,
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
+            Lottie.asset(
+              'assets/fondo.json',
+              width: 200,
+              height: 200,
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            const Text(
+              "¡ES HOY, ES HOY!",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25,
+                  fontFamily: 'JosefinSans-SemiBold'),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Text(
+              "${widget.alarm?.hour.toString().padLeft(2, '0')}:${widget.alarm?.minute.toString().padLeft(2, '0')} ${widget.alarm?.timeFormat}",
+              style: const TextStyle(
+                color: Color(0xFF1F3C88),
+                fontSize: 70,
+                fontFamily: 'JosefinSans-Bold',
+              ),
+            ),
+            const SizedBox(height: 50),
+            SlideAction(
+              borderRadius: 12,
+              elevation: 0,
+              innerColor: const Color(0xFF1F3C88),
+              outerColor: const Color(0xFF2E44AF),
+              submittedIcon: Icon(Icons.check),
+              sliderButtonIcon: const Icon(
+                Icons.cancel,
+                color: Colors.white,
+              ),
+              text: 'Desliza para apagar',
+              textStyle: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontFamily: 'JosefinSans-Regular'),
+              onSubmit: () {
                 _stopAlarm();
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
-              child: const Text(
-                "Apagar Alarma",
-                style: TextStyle(fontSize: 20, color: Colors.white),
-              ),
             ),
           ],
         ),

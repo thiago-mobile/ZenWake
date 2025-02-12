@@ -141,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               const SizedBox(height: 40),
               Container(
-                width: 150,
+                width: 170,
                 height: 80,
                 decoration: BoxDecoration(
                   color: Colors.transparent,
@@ -311,7 +311,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 20),
         child: FloatingActionButton(
-          backgroundColor: const Color(0xFF090B12),
+          backgroundColor: const Color(0xff141414),
           onPressed: () {
             Navigator.push(
               context,

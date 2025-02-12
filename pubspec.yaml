@@ -17,6 +17,8 @@ dependencies:
   audioplayers: ^6.1.1
   shared_preferences: ^2.5.1
   lottie: ^3.3.1
+  slide_to_act: ^2.0.2
+  video_player: ^2.9.2
 
 dev_dependencies:
   flutter_test:
@@ -60,5 +62,6 @@ flutter:
     - assets/olas_de_mar.mp3
     - assets/pajaros.mp3
     - assets/lluvia_relajacion.mp3
+    - assets/fondo.json
 
   uses-material-design: true

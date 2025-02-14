@@ -11,7 +11,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => AlarmModel()),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }

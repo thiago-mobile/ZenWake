@@ -63,7 +63,7 @@ class _AlarmscreenState extends State<Alarmscreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
             Lottie.asset(
@@ -71,7 +71,7 @@ class _AlarmscreenState extends State<Alarmscreen> {
               width: 200,
               height: 200,
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             const Text(
@@ -81,7 +81,7 @@ class _AlarmscreenState extends State<Alarmscreen> {
                   fontSize: 25,
                   fontFamily: 'JosefinSans-SemiBold'),
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             Text(
@@ -98,7 +98,7 @@ class _AlarmscreenState extends State<Alarmscreen> {
               elevation: 0,
               innerColor: const Color(0xFF1F3C88),
               outerColor: const Color(0xFF2E44AF),
-              submittedIcon: Icon(Icons.check),
+              submittedIcon: const Icon(Icons.check),
               sliderButtonIcon: const Icon(
                 Icons.cancel,
                 color: Colors.white,

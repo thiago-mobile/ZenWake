@@ -1,22 +1,38 @@
-class WeatherModel {
-  final String cityName;
-  final double temperature;
-  final String mainCondition;
-  final double humidity;
-  final double windSpeed;
-  final double feelsLike;
-  final String time; // Para mostrar la hora de la predicción.
+import 'package:flutter/material.dart';
 
+class WeatherModel extends ChangeNotifier {
+  String cityName;
+  double temperature;
+  String mainCondition;
+  double humidity;
+  double windSpeed;
+  double feelsLike;
+  String time;
+
+  // Constructor con valores predeterminados
   WeatherModel({
-    required this.cityName,
-    required this.temperature,
-    required this.mainCondition,
-    required this.humidity,
-    required this.windSpeed,
-    required this.feelsLike,
-    required this.time,
+    this.cityName = "Desconocido",
+    this.temperature = 0.0,
+    this.mainCondition = "Desconocido",
+    this.humidity = 0.0,
+    this.windSpeed = 0.0,
+    this.feelsLike = 0.0,
+    this.time = "--:--",
   });
 
+  // Método para actualizar el clima y notificar cambios a los widgets
+  void updateWeather(WeatherModel newWeather) {
+    cityName = newWeather.cityName;
+    temperature = newWeather.temperature;
+    mainCondition = newWeather.mainCondition;
+    humidity = newWeather.humidity;
+    windSpeed = newWeather.windSpeed;
+    feelsLike = newWeather.feelsLike;
+    time = newWeather.time;
+    notifyListeners(); // Notifica a los widgets dependientes
+  }
+
+  // Convertir desde JSON (clima actual)
   factory WeatherModel.fromJson(Map<String, dynamic> json) {
     return WeatherModel(
       cityName: json['name'],
@@ -29,7 +45,7 @@ class WeatherModel {
     );
   }
 
-  // Crear un constructor para el pronóstico horario.
+  // Convertir desde JSON (pronóstico por horas)
   factory WeatherModel.fromJsonForecast(Map<String, dynamic> json) {
     return WeatherModel(
       cityName: '',

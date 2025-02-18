@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:app_passo/models/alarmmodel.dart';
+import 'package:app_passo/models/weathermodel.dart';
 import 'package:app_passo/view/alarmscreen.dart';
 import 'package:app_passo/view/createalarm.dart';
 import 'package:app_passo/view/weather.dart';
@@ -19,6 +20,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String currentTime = DateFormat('HH:mm').format(DateTime.now());
   late AudioPlayer _audioPlayer;
+  late AlarmModel _alarmModel;
   late Timer _timer;
   bool isSwitched = true;
   bool isEditing = false;
@@ -42,6 +44,54 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future<void> _goToWeatherScreen() async {
+    final updatedWeather = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const WeatherScreen()),
+    );
+    if (updatedWeather != null) {
+      setState(() {
+        // Actualizar el modelo de clima con los nuevos datos
+        Provider.of<WeatherModel>(context, listen: false)
+            .updateWeather(updatedWeather);
+      });
+    }
+  }
+
+  String getWeatherAnimation(String? mainCondition) {
+    if (mainCondition == null) return 'assets/sol.json';
+    switch (mainCondition.toLowerCase()) {
+      case 'clouds':
+        return 'assets/nube_sol.json';
+      case 'mist':
+      case 'smoke':
+      case 'haze':
+      case 'dust':
+        return 'assets/nube.json';
+      case 'rain':
+      case 'drizzle':
+      case 'shower rain':
+        return 'assets/lluvia_chill.json';
+      case 'thunderstorm':
+        return 'assets/lluvia.json';
+      case 'clear':
+        return 'assets/sol.json';
+      default:
+        return 'assets/sol.json';
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _alarmModel = Provider.of<AlarmModel>(context, listen: false);
+    // Si el WeatherModel se actualiza, reconstruir la vista.
+    final weatherData = Provider.of<WeatherModel>(context);
+    if (weatherData != null) {
+      // Aquí puedes actualizar la UI si los datos cambiaron
+    }
+  }
+
   void _triggerAlarm(Alarm alarm) {
     Navigator.push(
       context,
@@ -54,8 +104,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     _timer.cancel();
+    _alarmModel.saveAlarms(); // Usamos la referencia guardada en vez de context
     super.dispose();
-    Provider.of<AlarmModel>(context, listen: false).saveAlarms();
   }
 
   void toggleEditing() {
@@ -93,6 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final weatherData = Provider.of<WeatherModel>(context);
     final alarmModel = Provider.of<AlarmModel>(context);
     if (selectedAlarms.length != alarmModel.alarms.length) {
       selectedAlarms = List<bool>.filled(alarmModel.alarms.length, false);
@@ -142,40 +193,57 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               const SizedBox(height: 40),
               GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const WeatherScreen()));
-                },
-                child: Text(
-                  'Clima',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 20,
-                    fontFamily: 'JosefinSans-SemiBold',
-                  ),
-                ),
-              ),
-              Container(
-                width: 170,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: const Color(0xFF1F3C88),
-                    width: 1,
-                  ),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  currentTime,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 60,
-                    fontFamily: 'JosefinSans-Light',
-                  ),
+                onTap: _goToWeatherScreen,
+                child: Stack(
+                  children: [
+                    // Fondo animado según el clima
+                    // Contenedor con la información del clima
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        color: Colors.black
+                            .withOpacity(0.5), // Fondo semi-transparente
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(color: Colors.white38, width: 1),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                weatherData.temperature.toStringAsFixed(1) +
+                                    "°C", // Temperatura
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                weatherData
+                                    .mainCondition, // Condición del clima
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            currentTime, // Hora actual
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 50,
+                              fontFamily: 'JosefinSans-Light',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 20),
@@ -318,31 +386,29 @@ class _MyHomePageState extends State<MyHomePage> {
                         }).toList(),
                       ),
                     ),
-              const SizedBox(height: 20),
             ],
           ),
         ),
       ),
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.miniCenterFloat,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 20),
-        child: FloatingActionButton(
-          backgroundColor: const Color(0xff141414),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const CreateAlarm()),
-            );
-          },
-          child: Lottie.asset(
-            'assets/add_alarm.json',
-            width: 70,
-            height: 70,
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.miniEndDocked,
+      // floatingActionButton: Padding(
+      //   padding: const EdgeInsets.only(top: 10),
+      //   child: FloatingActionButton(
+      //     backgroundColor: const Color(0xff141414),
+      //     onPressed: () {
+      //       Navigator.push(
+      //         context,
+      //         MaterialPageRoute(builder: (context) => const CreateAlarm()),
+      //       );
+      //     },
+      //     child: Lottie.asset(
+      //       'assets/add_alarm.json',
+      //       width: 70,
+      //       height: 70,
+      //       fit: BoxFit.cover,
+      //     ),
+      //   ),
+      // ),
     );
   }
 }

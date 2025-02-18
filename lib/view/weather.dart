@@ -4,6 +4,7 @@ import 'package:app_passo/services/weather_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import 'package:weather/weather.dart';
 
 class WeatherScreen extends StatefulWidget {
@@ -20,16 +21,22 @@ class _WeatherScreenState extends State<WeatherScreen> {
   bool isLoading = true;
 
   _fetchWeather() async {
+    if (!mounted)
+      return; // Verifica si el widget sigue montado antes de actualizar el estado
+
     setState(() {
       isLoading = true; // Activa la animación de carga
     });
+
     var locationData = await _weatherService.getCurrentLocation();
     try {
       final forecast = await _weatherService.getHourlyWeather(
           locationData['lat'], locationData['lon']);
+
+      if (!mounted) return; // Verifica nuevamente antes de actualizar el estado
+
       setState(() {
         _hourlyForecast = forecast;
-        // Aquí también actualizamos _weather con los datos del primer pronóstico
         _weather = WeatherModel(
           cityName: locationData['city'],
           temperature: forecast.isNotEmpty ? forecast[0].temperature : 0.0,
@@ -44,6 +51,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
       });
     } catch (e) {
       print(e);
+      if (!mounted)
+        return; // Evita actualizar el estado si el widget ya no existe
       setState(() {
         isLoading = false; // En caso de error, también oculta la animación
       });
@@ -66,6 +75,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
     if (mainCondition == null) return 'assets/sol.json';
     switch (mainCondition.toLowerCase()) {
       case 'clouds':
+        return 'assets/nube_sol.json';
       case 'mist':
       case 'smoke':
       case 'haze':
@@ -92,139 +102,121 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final weatherData = Provider.of<WeatherModel>(context, listen: false);
     return Scaffold(
+      backgroundColor: const Color(0xff141414),
       appBar: AppBar(
+        backgroundColor: const Color(0xff141414),
+        title: Padding(
+          padding: const EdgeInsets.only(left: 50),
+          child: Text(
+            _weather?.cityName ?? '',
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontFamily: 'JoseFinSans-Regular'),
+          ),
+        ),
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, _weather);
           },
-          icon: Icon(Icons.alarm),
+          icon: Icon(Icons.arrow_back_ios),
           color: Colors.white,
         ),
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFF2858D0),
-                Color(0xFF1B2845),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
-        ),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(0xFF1B2845),
-              Color(0xFF2858D0),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Center(
-          child: isLoading
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Lottie.asset('assets/clima_load.json',
-                        width: 150, height: 150),
-                    const SizedBox(height: 20),
-                    const Text(
-                      "Obteniendo datos del clima...",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontFamily: 'JoseFinSans-Regular'),
-                    ),
-                  ],
-                )
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 100),
-                    Text(
-                      _weather?.cityName ?? '',
+      body: Center(
+        child: isLoading
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Lottie.asset('assets/clima_load.json',
+                      width: 150, height: 150),
+                  const SizedBox(height: 20),
+                  const Text(
+                    "Obteniendo datos del clima...",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: 'JoseFinSans-Regular'),
+                  ),
+                ],
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 50),
+                  Lottie.asset(getWeatherAnimation(_weather?.mainCondition),
+                      width: 200, height: 200, fit: BoxFit.cover),
+                  Text('${_weather?.temperature.round()}°C',
                       style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 27,
-                          fontFamily: 'JoseFinSans-SemiBold'),
-                    ),
-                    Lottie.asset(getWeatherAnimation(_weather?.mainCondition),
-                        width: 200, height: 200, fit: BoxFit.cover),
-                    Text('${_weather?.temperature.round()}°C',
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 37,
-                            fontFamily: 'JoseFinSans-Regular')),
-                    Text(_weather?.mainCondition ?? "",
-                        style: const TextStyle(
+                          fontSize: 37,
+                          fontFamily: 'JoseFinSans-Regular')),
+                  Text(_weather?.mainCondition ?? "",
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontFamily: 'JoseFinSans-Regular')),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const SizedBox(width: 10),
+                      Row(
+                        children: [
+                          const Icon(Icons.water_drop,
+                              color: Colors.blue, size: 20),
+                          const SizedBox(width: 5),
+                          Text('${_weather?.humidity ?? "--"}%',
+                              style: const TextStyle(color: Colors.white)),
+                        ],
+                      ),
+                      const SizedBox(width: 60),
+                      Row(
+                        children: [
+                          const Icon(Icons.air,
+                              color: Colors.white70, size: 20),
+                          const SizedBox(width: 5),
+                          Text('${_weather?.windSpeed ?? "--"} km/h',
+                              style: const TextStyle(color: Colors.white)),
+                        ],
+                      ),
+                      const SizedBox(width: 45),
+                      Row(
+                        children: [
+                          const Icon(Icons.thermostat_auto,
+                              color: Colors.amber, size: 20),
+                          const SizedBox(width: 5),
+                          Text('${_weather?.feelsLike ?? "--"}°C',
+                              style: const TextStyle(color: Colors.white)),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        child: Text(
+                          "Pronostico por hora",
+                          style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
-                            fontFamily: 'JoseFinSans-Regular')),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const SizedBox(width: 10),
-                        Row(
-                          children: [
-                            const Icon(Icons.water_drop,
-                                color: Colors.blue, size: 20),
-                            const SizedBox(width: 5),
-                            Text('${_weather?.humidity ?? "--"}%',
-                                style: const TextStyle(color: Colors.white)),
-                          ],
-                        ),
-                        const SizedBox(width: 60),
-                        Row(
-                          children: [
-                            const Icon(Icons.air,
-                                color: Colors.white70, size: 20),
-                            const SizedBox(width: 5),
-                            Text('${_weather?.windSpeed ?? "--"} km/h',
-                                style: const TextStyle(color: Colors.white)),
-                          ],
-                        ),
-                        const SizedBox(width: 45),
-                        Row(
-                          children: [
-                            const Icon(Icons.thermostat_auto,
-                                color: Colors.amber, size: 20),
-                            const SizedBox(width: 5),
-                            Text('${_weather?.feelsLike ?? "--"}°C',
-                                style: const TextStyle(color: Colors.white)),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          child: Text(
-                            "Pronostico por hora",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontFamily: 'JoseFinSans-SemiBold',
-                            ),
+                            fontFamily: 'JoseFinSans-SemiBold',
                           ),
                         ),
-                        _buildHourlyWeatherCarousel(),
-                      ],
-                    ),
-                  ],
-                ),
-        ),
+                      ),
+                      _buildHourlyWeatherCarousel(),
+                    ],
+                  ),
+                ],
+              ),
       ),
     );
   }

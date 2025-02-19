@@ -56,10 +56,10 @@ class _CustomNavigationState extends State<CustomNavigation> {
       body: _mainWrapperBody(),
       bottomNavigationBar: _mainWrapperBottomNavBar(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      // floatingActionButton: Padding(
-      //   padding: const EdgeInsets.only(top: 10),
-      //   child: _mainWrapperBody(),
-      // ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: _mainFloating(),
+      ),
     );
   }
 
@@ -97,7 +97,7 @@ class _CustomNavigationState extends State<CustomNavigation> {
                   ],
                 ),
               ),
-              // const SizedBox(width: 80, height: 10),
+              const SizedBox(width: 50, height: 10),
             ],
           ),
         );
@@ -129,7 +129,7 @@ class _CustomNavigationState extends State<CustomNavigation> {
         );
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: Color(0xFF141414),
       child: Lottie.asset(
         'assets/add_alarm.json',
         width: 70,

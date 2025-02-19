@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:app_passo/models/alarmmodel.dart';
 import 'package:app_passo/models/weathermodel.dart';
+import 'package:app_passo/services/weather_service.dart';
 import 'package:app_passo/view/alarmscreen.dart';
 import 'package:app_passo/view/createalarm.dart';
 import 'package:app_passo/view/weather.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -19,8 +21,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String currentTime = DateFormat('HH:mm').format(DateTime.now());
+  final _weatherService = WeatherService('e3d045cd24f4db577df419a77e054b54');
   late AudioPlayer _audioPlayer;
   late AlarmModel _alarmModel;
+  List<WeatherModel> _hourlyForecast = [];
+  bool isLoading = true;
+  WeatherModel? _weather;
   late Timer _timer;
   bool isSwitched = true;
   bool isEditing = false;
@@ -28,6 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    _fetchWeather();
     _audioPlayer = AudioPlayer(); // Inicialización del AudioPlayer
     Provider.of<AlarmModel>(context, listen: false).loadAlarms();
     _timer = Timer.periodic(const Duration(seconds: 60), (Timer timer) {
@@ -44,40 +51,42 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<void> _goToWeatherScreen() async {
-    final updatedWeather = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const WeatherScreen()),
-    );
-    if (updatedWeather != null) {
-      setState(() {
-        // Actualizar el modelo de clima con los nuevos datos
-        Provider.of<WeatherModel>(context, listen: false)
-            .updateWeather(updatedWeather);
-      });
-    }
-  }
+  _fetchWeather() async {
+    if (!mounted)
+      return; // Verifica si el widget sigue montado antes de actualizar el estado
 
-  String getWeatherAnimation(String? mainCondition) {
-    if (mainCondition == null) return 'assets/sol.json';
-    switch (mainCondition.toLowerCase()) {
-      case 'clouds':
-        return 'assets/nube_sol.json';
-      case 'mist':
-      case 'smoke':
-      case 'haze':
-      case 'dust':
-        return 'assets/nube.json';
-      case 'rain':
-      case 'drizzle':
-      case 'shower rain':
-        return 'assets/lluvia_chill.json';
-      case 'thunderstorm':
-        return 'assets/lluvia.json';
-      case 'clear':
-        return 'assets/sol.json';
-      default:
-        return 'assets/sol.json';
+    setState(() {
+      isLoading = true; // Activa la animación de carga
+    });
+
+    var locationData = await _weatherService.getCurrentLocation();
+    try {
+      final forecast = await _weatherService.getHourlyWeather(
+          locationData['lat'], locationData['lon']);
+
+      if (!mounted) return; // Verifica nuevamente antes de actualizar el estado
+
+      setState(() {
+        _hourlyForecast = forecast;
+        _weather = WeatherModel(
+          cityName: locationData['city'],
+          temperature: forecast.isNotEmpty ? forecast[0].temperature : 0.0,
+          mainCondition:
+              forecast.isNotEmpty ? forecast[0].mainCondition : "Unknown",
+          humidity: forecast.isNotEmpty ? forecast[0].humidity : 0.0,
+          windSpeed: forecast.isNotEmpty ? forecast[0].windSpeed : 0.0,
+          feelsLike: forecast.isNotEmpty ? forecast[0].feelsLike : 0.0,
+          time: forecast.isNotEmpty ? forecast[0].time : '',
+        );
+        isLoading = false;
+      });
+    } catch (e) {
+      print(e);
+      if (!mounted)
+        return; // Evita actualizar el estado si el widget ya no existe
+      setState(() {
+        isLoading = false; // En caso de error, también oculta la animación
+      });
     }
   }
 
@@ -191,60 +200,27 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const SizedBox(height: 40),
-              GestureDetector(
-                onTap: _goToWeatherScreen,
-                child: Stack(
-                  children: [
-                    // Fondo animado según el clima
-                    // Contenedor con la información del clima
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 20),
-                      padding: const EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                        color: Colors.black
-                            .withOpacity(0.5), // Fondo semi-transparente
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(color: Colors.white38, width: 1),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                weatherData.temperature.toStringAsFixed(1) +
-                                    "°C", // Temperatura
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                weatherData
-                                    .mainCondition, // Condición del clima
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Text(
-                            currentTime, // Hora actual
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 50,
-                              fontFamily: 'JosefinSans-Light',
-                            ),
-                          ),
-                        ],
-                      ),
+              const SizedBox(height: 20),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    currentTime, // Hora actual
+                    style: GoogleFonts.aboreto(
+                      color: Color(0xFFFFFFFF),
+                      fontSize: 60,
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(
+                      width: 10), // Espacio entre la hora y la ciudad
+                  Text(
+                    _weather?.cityName ?? '', // Ciudad actual
+                    style: GoogleFonts.aBeeZee(
+                      color: Color(0xFFFFFFFF),
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
               const Align(

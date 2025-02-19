@@ -108,7 +108,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
       appBar: AppBar(
         backgroundColor: const Color(0xff141414),
         title: Padding(
-          padding: const EdgeInsets.only(left: 50),
+          padding: const EdgeInsets.only(left: 110, top: 20),
           child: Text(
             _weather?.cityName ?? '',
             style: const TextStyle(
@@ -116,13 +116,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 fontSize: 20,
                 fontFamily: 'JoseFinSans-Regular'),
           ),
-        ),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context, _weather);
-          },
-          icon: Icon(Icons.arrow_back_ios),
-          color: Colors.white,
         ),
       ),
       body: Center(

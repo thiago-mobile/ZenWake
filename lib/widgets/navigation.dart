@@ -1,6 +1,6 @@
 import 'package:app_passo/bloc/bottomNavBar.dart';
 import 'package:app_passo/view/createalarm.dart';
-import 'package:app_passo/view/geminichat.dart';
+import 'package:app_passo/view/assistintelligent.dart';
 import 'package:app_passo/view/homescreen.dart';
 import 'package:app_passo/view/weather.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +41,7 @@ class _CustomNavigationState extends State<CustomNavigation> {
   final List<Widget> pageView = const [
     MyHomePage(),
     WeatherScreen(),
-    GeminiChat(),
+    AssistIntelligent(),
   ];
 
   void onPageChanged(int page) {
@@ -91,7 +91,7 @@ class _CustomNavigationState extends State<CustomNavigation> {
                     _bottomAppBarItem(
                       defaultIcon: IconlyLight.chat,
                       page: 2,
-                      label: "Gemini",
+                      label: "Asistent",
                       filledIcon: IconlyBold.chat,
                     ),
                   ],
@@ -120,7 +120,7 @@ class _CustomNavigationState extends State<CustomNavigation> {
           const SnackBar(
             behavior: SnackBarBehavior.floating,
             backgroundColor: Color(0xFF141414),
-            content: Text("New post will generate in upcoming 2 mins 📮"),
+            content: Text("📮"),
           ),
         );
         Navigator.push(

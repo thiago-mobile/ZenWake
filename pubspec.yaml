@@ -29,6 +29,10 @@ dependencies:
   google_fonts: ^6.2.1
   flutter_bloc: ^9.0.0
   google_generative_ai: ^0.4.6
+  flutter_markdown: ^0.7.6+2
+  local_auth: ^2.3.0
+  speech_to_text: ^7.0.0
+  google_maps_flutter: ^2.12.0
 
 dev_dependencies:
   flutter_test:
@@ -79,5 +83,98 @@ flutter:
     - assets/lluvia_chill.json
     - assets/clima_load.json
     - assets/nube_sol.json
+    - assets/flags/argentina.png
+    - assets/flags/bolivia.png
+    - assets/flags/brasil.png
+    - assets/flags/chile.png
+    - assets/flags/colombia.png
+    - assets/flags/costa_rica.png
+    - assets/flags/cuba.png
+    - assets/flags/ecuador.png
+    - assets/flags/espana.png
+    - assets/flags/guatemala.png
+    - assets/flags/honduras.png
+    - assets/flags/mexico.png
+    - assets/flags/nicaragua.png
+    - assets/flags/paraguay.png
+    - assets/flags/peru.png
+    - assets/flags/puerto_rico.png
+    - assets/flags/salvador.png
+    - assets/flags/uruguay.png
+    - assets/flags/venezuela.png
+    - assets/flags/estados_unidos.png
+    - assets/flags/canada.png
+    - assets/flags/inglaterra.png
+    - assets/flags/italia.png
+    - assets/flags/alemania.png
+    - assets/flags/francia.png
+    - assets/flags/portugal.png
+    - assets/flags/irlanda.png
+    - assets/flags/escocia.png
+    - assets/flags/afghanistan.png
+    - assets/flags/albania.png
+    - assets/flags/andorra.png
+    - assets/flags/angola.png
+    - assets/flags/arabia_saudita.png
+    - assets/flags/argelia.png
+    - assets/flags/armenia.png
+    - assets/flags/australia.png
+    - assets/flags/austria.png
+    - assets/flags/bangladesh.png
+    - assets/flags/belgica.png
+    - assets/flags/gales.png
+    - assets/flags/bosnia.png
+    - assets/flags/suiza.png
+    - assets/flags/venezuela.png
+    - assets/flags/taiwan.png
+    - assets/flags/vietnam.png
+    - assets/flags/grecia.png
+    - assets/flags/senegal.png
+    - assets/flags/costa_rica.png
+    - assets/flags/serbia.png
+    - assets/flags/estados_unidos.png
+    - assets/flags/estonia.png
+    - assets/flags/finlandia.png
+    - assets/flags/francia.png
+    - assets/flags/sudan.png
+    - assets/flags/samoa.png
+    - assets/flags/republica_cheka.png
+    - assets/flags/indonesia.png
+    - assets/flags/iran.png
+    - assets/flags/irlanda.png
+    - assets/flags/islandia.png
+    - assets/flags/japon.png
+    - assets/flags/iraq.png
+    - assets/flags/nueva_zelanda.png
+    - assets/flags/rumania.png
+    - assets/flags/croacia.png
+    - assets/flags/dominicana.png
+    - assets/flags/albania.png
+    - assets/flags/austria.png
+    - assets/flags/serbia.png
+    - assets/flags/slovakia.png
+    - assets/flags/suecia.png
+    - assets/flags/luxemburgo.png
+    - assets/flags/malta.png
+    - assets/flags/mali.png
+    - assets/flags/marruecos.png
+    - assets/flags/pakistan.png
+    - assets/flags/netherlands.png
+    - assets/flags/panama.png
+    - assets/flags/rusia.png
+    - assets/flags/turquia.png
+    - assets/flags/fiji.png
+    - assets/flags/gran_bretaña.png
+    - assets/flags/noruega.png
+    - assets/flags/mexico.png
+    - assets/flags/georgia.png
+    - assets/flags/nigeria.png
+    - assets/flags/palestina.png
+    - assets/flags/polonia.png
+    - assets/flags/qatar.png
+    - assets/flags/sudafrica.png
+    - assets/flags/ucrania.png
+    - assets/flags/uganda.png
+    - assets/flags/yemen.png
 
   uses-material-design: true

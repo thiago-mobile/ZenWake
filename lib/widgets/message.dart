@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
-class MessageWidget extends StatefulWidget {
+class MessageWidget extends StatelessWidget {
   const MessageWidget(
       {super.key, required this.text, required this.isFromUser});
 
@@ -8,20 +9,29 @@ class MessageWidget extends StatefulWidget {
   final bool isFromUser;
 
   @override
-  State<MessageWidget> createState() => _MessageWidgetState();
-}
-
-class _MessageWidgetState extends State<MessageWidget> {
-  @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment:
+          isFromUser ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         Flexible(
-            child: Container(
-          child: Column(
-            children: [],
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+            margin: const EdgeInsets.only(bottom: 8),
+            constraints: BoxConstraints(
+              maxWidth: 520,
+            ),
+            decoration: BoxDecoration(
+              color: isFromUser ? Colors.blue : Colors.grey,
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Column(
+              children: [
+                MarkdownBody(data: text),
+              ],
+            ),
           ),
-        ))
+        )
       ],
     );
   }

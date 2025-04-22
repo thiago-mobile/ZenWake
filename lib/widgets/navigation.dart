@@ -120,7 +120,7 @@ class _CustomNavigationState extends State<CustomNavigation> {
           const SnackBar(
             behavior: SnackBarBehavior.floating,
             backgroundColor: Color(0xFF141414),
-            content: Text("📮"),
+            content: Text("📮¡Acuerdate de activarla luego de crearla!"),
           ),
         );
         Navigator.push(

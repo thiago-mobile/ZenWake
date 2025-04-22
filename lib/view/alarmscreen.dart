@@ -165,24 +165,24 @@ class _AlarmscreenState extends State<Alarmscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff141414),
+      backgroundColor: const Color(0xff0000),
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: const Color(0xff141414),
+        backgroundColor: const Color(0xff0000),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const SizedBox(height: 50),
-            Lottie.asset('assets/fondo.json', width: 200, height: 200),
+            const SizedBox(height: 30),
+            Lottie.asset('assets/fondo.json', width: 280, height: 280),
             const SizedBox(height: 30),
             const Text(
-              "¡ES HOY, ES HOY!",
+              "adivina la bandera para apagarme!",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 25,
-                fontFamily: 'JosefinSans-SemiBold',
+                fontSize: 20,
+                fontFamily: 'JosefinSans-Bold',
               ),
             ),
             const SizedBox(height: 30),
@@ -211,16 +211,43 @@ class _AlarmscreenState extends State<Alarmscreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              Wrap(
-                spacing: 10,
-                children: _options.map((flag) {
-                  return GestureDetector(
-                    onTap: () => _checkAnswer(flag["country"]!),
-                    child: Image.asset(flag["image"]!, width: 80, height: 50),
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 30),
+              AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Wrap(
+                        spacing: 20,
+                        runSpacing: 20,
+                        alignment: WrapAlignment.center,
+                        children: _options.map((flag) {
+                          return GestureDetector(
+                            onTap: () => _checkAnswer(flag["country"]!),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              width: 120,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: Colors.white.withOpacity(0.9),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 5,
+                                    offset: const Offset(2, 2),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.asset(
+                                  flag["image"]!,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
             ],
 
             // Botón deslizable (se activa solo si se completó el desafío)

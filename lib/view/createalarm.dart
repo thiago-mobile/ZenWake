@@ -17,9 +17,9 @@ class _CreateAlarmState extends State<CreateAlarm> {
   bool _isVibrationEnabled = false;
   double _currentVolume = 0.5;
   bool hayNotificacionPendiente = true;
-  late int hour;
-  late int minute;
-  late String timeFormat;
+  int hour = 0;
+  int minute = 0;
+  String timeFormat = "AM";
   late Map<String, bool> _selectedDays;
   late String subject;
   late String selectedTone;
@@ -170,6 +170,33 @@ class _CreateAlarmState extends State<CreateAlarm> {
                                   fontFamily: 'JosefinSans-Regular',
                                 ),
                               ),
+                              Padding(
+  padding: const EdgeInsets.symmetric(vertical: 10),
+  child: ToggleButtons(
+    borderColor: Colors.grey,
+    fillColor: Colors.blue,
+    borderWidth: 2,
+    selectedBorderColor: Colors.blue,
+    selectedColor: Colors.white,
+    borderRadius: BorderRadius.circular(10),
+    children: const <Widget>[
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Text('AM'),
+      ),
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Text('PM'),
+      ),
+    ],
+    isSelected: [timeFormat == 'AM', timeFormat == 'PM'],
+    onPressed: (int index) {
+      setState(() {
+        timeFormat = index == 0 ? 'AM' : 'PM';
+      });
+    },
+  ),
+),
                             ],
                           ),
                         ),
@@ -178,6 +205,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
                   ),
                 ),
                 const SizedBox(height: 20),
+//Seleccion de dias
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: _selectedDays.keys.map((day) {
@@ -211,6 +239,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
                   }).toList(),
                 ),
                 const SizedBox(height: 20),
+//Nombre de la alarma
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
@@ -248,11 +277,11 @@ class _CreateAlarmState extends State<CreateAlarm> {
                     },
                   ),
                 ),
-                const SizedBox(height: 26),
+                const SizedBox(height: 15),
                 Stack(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(right: 280),
+                      padding: const EdgeInsets.only(right: 330),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -301,7 +330,7 @@ class _CreateAlarmState extends State<CreateAlarm> {
                 Stack(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 10),
+                      padding: const EdgeInsets.only(left: 14,top:10),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -309,12 +338,12 @@ class _CreateAlarmState extends State<CreateAlarm> {
                             'Vibracion',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 18,
+                              fontSize: 20,
                               fontFamily: 'JosefinSans-Regular',
                             ),
                           ),
                           const SizedBox(
-                            width: 200,
+                            width: 250,
                           ),
                           Switch(
                             value: _isVibrationEnabled,
@@ -344,45 +373,51 @@ class _CreateAlarmState extends State<CreateAlarm> {
                         ),
                       ),
                       onPressed: () async {
-                        setState(() {
-                          _showLottie = true; // Mostrar la animación
-                        });
+  // Validar si el formato AM/PM es correcto
+  if (timeFormat != 'AM' && timeFormat != 'PM') {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Por favor especificá si es AM o PM.'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return;
+  }
 
-                        // Esperar 2 segundos antes de proceder
-                        await Future.delayed(Duration(seconds: 2));
+  setState(() {
+    _showLottie = true; // Mostrar animación solo si pasa la validación
+  });
 
-                        final newAlarm = Alarm(
-                          subject: subject,
-                          hour: hour,
-                          minute: minute,
-                          timeFormat: timeFormat,
-                          selectedDays: _selectedDays,
-                          selectedTone: selectedTone,
-                        );
+  // Esperar 2 segundos antes de proceder
+  await Future.delayed(const Duration(seconds: 2));
 
-                        if (widget.existingAlarm != null) {
-                          // Actualizar alarma existente
-                          final alarmModel =
-                              Provider.of<AlarmModel>(context, listen: false);
-                          final index =
-                              alarmModel.alarms.indexOf(widget.existingAlarm!);
-                          alarmModel.alarms[index] = newAlarm;
-                          alarmModel.notifyListeners();
-                        } else {
-                          // Agregar nueva alarma
-                          Provider.of<AlarmModel>(context, listen: false)
-                              .addAlarm(newAlarm);
-                        }
+  final newAlarm = Alarm(
+    subject: subject,
+    hour: hour,
+    minute: minute,
+    timeFormat: timeFormat,
+    selectedDays: _selectedDays,
+    selectedTone: selectedTone,
+  );
 
-                        Navigator.pop(context);
-                      },
+  if (widget.existingAlarm != null) {
+    final alarmModel = Provider.of<AlarmModel>(context, listen: false);
+    final index = alarmModel.alarms.indexOf(widget.existingAlarm!);
+    alarmModel.alarms[index] = newAlarm;
+    alarmModel.notifyListeners();
+  } else {
+    Provider.of<AlarmModel>(context, listen: false).addAlarm(newAlarm);
+  }
+
+  Navigator.pop(context);
+},
                       child: const Icon(
                         Icons.check,
                         color: Colors.white,
                         size: 25,
                       ),
                     ),
-                    if (_showLottie)
+                    if (_showLottie && timeFormat != 'AM' && timeFormat != 'PM' )
                       Positioned.fill(
                         child: Center(
                           child: Lottie.asset(

@@ -108,12 +108,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
       appBar: AppBar(
         backgroundColor: const Color(0xff141414),
         title: Padding(
-          padding: const EdgeInsets.only(left: 110, top: 20),
+          padding: const EdgeInsets.only(left: 140, top: 20),
           child: Text(
             _weather?.cityName ?? '',
             style: const TextStyle(
                 color: Colors.white,
-                fontSize: 20,
+                fontSize: 24,
                 fontFamily: 'JoseFinSans-Regular'),
           ),
         ),
@@ -155,7 +155,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 30),
                       Row(
                         children: [
                           const Icon(Icons.water_drop,
@@ -165,7 +165,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                               style: const TextStyle(color: Colors.white)),
                         ],
                       ),
-                      const SizedBox(width: 60),
+                      const SizedBox(width: 80),
                       Row(
                         children: [
                           const Icon(Icons.air,
@@ -175,7 +175,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                               style: const TextStyle(color: Colors.white)),
                         ],
                       ),
-                      const SizedBox(width: 45),
+                      const SizedBox(width: 65),
                       Row(
                         children: [
                           const Icon(Icons.thermostat_auto,
@@ -260,7 +260,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   children: [
                     const Icon(Icons.thermostat,
                         color: Colors.orangeAccent, size: 16),
-                    const SizedBox(width: 5),
                     Text('${_hourlyForecast[index].temperature.round()}°C',
                         style: const TextStyle(
                             color: Colors.white,

@@ -1,5 +1,6 @@
 import 'package:app_passo/bloc/bottomNavBar.dart';
 import 'package:app_passo/models/alarmmodel.dart';
+import 'package:app_passo/models/sleeprecord.dart';
 import 'package:app_passo/view/createalarm.dart';
 import 'package:app_passo/view/homescreen.dart';
 import 'package:app_passo/view/sounalarm.dart';
@@ -16,6 +17,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => AlarmModel()),
         ChangeNotifierProvider(create: (_) => WeatherModel()),
+        ChangeNotifierProvider(create: (_) => SleepModel()),
       ],
       child: const MyApp(),
     ),

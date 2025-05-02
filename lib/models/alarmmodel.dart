@@ -13,6 +13,7 @@ class Alarm {
   bool isActive;
   String selectedTone;
   bool isVibrationEnabled;
+  DateTime? sleepTime;
 
   Alarm({
     required this.subject,
@@ -23,6 +24,7 @@ class Alarm {
     this.isActive = false,
     required this.selectedTone,
     this.isVibrationEnabled = false,
+    required this.sleepTime,
   });
 
   // Convertir a JSON
@@ -36,6 +38,7 @@ class Alarm {
       'isActive': isActive,
       'selectedTone': selectedTone,
       'isVibrationEnabled': isVibrationEnabled,
+      'sleepTime': sleepTime?.toIso8601String(),
     });
   }
 
@@ -51,6 +54,7 @@ class Alarm {
       isActive: json['isActive'],
       selectedTone: json['selectedTone'],
       isVibrationEnabled: json['isVibrationEnabled'] ?? false,
+      sleepTime: json['sleepTime'] != null ? DateTime.parse(json['sleepTime']) : null,
     );
   }
 }
@@ -64,6 +68,7 @@ class AlarmModel with ChangeNotifier {
     saveAlarms(); // Guardar después de agregar
     notifyListeners();
   }
+  
 
   // Método para eliminar una alarma
   void removeAlarm(int index) {
@@ -74,10 +79,14 @@ class AlarmModel with ChangeNotifier {
 
   // Método para activar o desactivar una alarma
   void toggleAlarm(int index) {
-    alarms[index].isActive = !alarms[index].isActive;
-    saveAlarms(); // Guardar después de cambiar el estado
-    notifyListeners();
+  final alarm = alarms[index];
+  alarm.isActive = !alarm.isActive;
+  if (alarm.isActive) {
+    alarm.sleepTime = DateTime.now(); // Aquí guardás el sleep time
   }
+  saveAlarms();
+  notifyListeners();
+}
 
   // Guardar las alarmas en SharedPreferences
   Future<void> saveAlarms() async {

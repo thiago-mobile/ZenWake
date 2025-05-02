@@ -70,6 +70,7 @@ flutter:
     - assets/agregarAlarma.png
     - assets/alarma.json
     - assets/add_alarm.json
+    - assets/sleeping.json
     - assets/check.json
     - assets/Cascada.mp3
     - assets/lluvia.mp3

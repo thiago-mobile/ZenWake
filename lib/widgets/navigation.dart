@@ -1,6 +1,6 @@
 import 'package:app_passo/bloc/bottomNavBar.dart';
-import 'package:app_passo/view/createalarm.dart';
 import 'package:app_passo/view/assistintelligent.dart';
+import 'package:app_passo/view/createalarm.dart';
 import 'package:app_passo/view/homescreen.dart';
 import 'package:app_passo/view/weather.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +41,7 @@ class _CustomNavigationState extends State<CustomNavigation> {
   final List<Widget> pageView = const [
     MyHomePage(),
     WeatherScreen(),
-    AssistIntelligent(),
+    SleepStatsScreen(),
   ];
 
   void onPageChanged(int page) {

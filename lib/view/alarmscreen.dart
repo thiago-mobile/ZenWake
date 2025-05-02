@@ -1,8 +1,11 @@
 import 'dart:math';
+import 'dart:ui';
 import 'package:app_passo/models/alarmmodel.dart';
+import 'package:app_passo/models/sleeprecord.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 import 'package:vibration/vibration.dart';
 
@@ -101,6 +104,7 @@ class _AlarmscreenState extends State<Alarmscreen> {
 
   late Map<String, String> _correctFlag;
   late List<Map<String, String>> _options;
+  int _errorCount = 0;
 
   @override
   void initState() {
@@ -138,23 +142,39 @@ class _AlarmscreenState extends State<Alarmscreen> {
   }
 
   void _checkAnswer(String country) {
-    if (country == _correctFlag["country"]) {
-      setState(() {
-        _challengeCompleted = true;
-      });
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("Respuesta incorrecta. Intenta otra vez.")),
-      );
-    }
+  if (country == _correctFlag["country"]) {
+    setState(() {
+      _challengeCompleted = true;
+    });
+  } else {
+    setState(() {
+      _errorCount++;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Respuesta incorrecta. Intenta otra vez.")),
+    );
   }
+}
 
   Future<void> _stopAlarm() async {
-    await _audioPlayer.stop();
-    Vibration.cancel();
-    Navigator.pop(context);
-  }
+  await _audioPlayer.stop();
+  Vibration.cancel();
+
+  final sleepTime = widget.alarm?.sleepTime ?? DateTime.now().subtract(Duration(hours: 7));
+  final wakeUpTime = DateTime.now();
+
+  final sleepRecord = SleepRecord(
+    sleepTime: sleepTime,
+    wakeUpTime: wakeUpTime,
+    challengeErrors: _errorCount,
+  );
+
+  // Guardamos el registro
+  final sleepModel = Provider.of<SleepModel>(context, listen: false);
+  sleepModel.addRecord(sleepRecord);
+
+  Navigator.pop(context);
+}
 
   @override
   void dispose() {
@@ -176,15 +196,6 @@ class _AlarmscreenState extends State<Alarmscreen> {
           children: [
             const SizedBox(height: 30),
             Lottie.asset('assets/fondo.json', width: 280, height: 280),
-            const SizedBox(height: 30),
-            const Text(
-              "adivina la bandera para apagarme!",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontFamily: 'JosefinSans-Bold',
-              ),
-            ),
             const SizedBox(height: 30),
             Text(
               "${widget.alarm?.hour.toString().padLeft(2, '0')}:${widget.alarm?.minute.toString().padLeft(2, '0')} ${widget.alarm?.timeFormat}",
@@ -212,49 +223,66 @@ class _AlarmscreenState extends State<Alarmscreen> {
               ),
               const SizedBox(height: 20),
               AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Wrap(
-                        spacing: 20,
-                        runSpacing: 20,
-                        alignment: WrapAlignment.center,
-                        children: _options.map((flag) {
-                          return GestureDetector(
-                            onTap: () => _checkAnswer(flag["country"]!),
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              width: 120,
-                              height: 80,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.white.withOpacity(0.9),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black26,
-                                    blurRadius: 5,
-                                    offset: const Offset(2, 2),
-                                  ),
-                                ],
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Image.asset(
-                                  flag["image"]!,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
+  duration: const Duration(milliseconds: 300),
+  padding: const EdgeInsets.symmetric(horizontal: 20),
+  child: Wrap(
+    spacing: 20,
+    runSpacing: 20,
+    alignment: WrapAlignment.center,
+    children: _options.map((flag) {
+  return GestureDetector(
+    onTap: () => _checkAnswer(flag["country"]!),
+    child: AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      width: 120,
+      height: 80,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 12,
+            offset: const Offset(4, 6),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.asset(
+              flag["image"]!,
+              fit: BoxFit.cover,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.05)
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}).toList(),
+  ),
+)
             ],
 
             // Botón deslizable (se activa solo si se completó el desafío)
             if (_challengeCompleted)
               SlideAction(
-                borderRadius: 12,
-                elevation: 0,
+                borderRadius: 42,
+                elevation: 3,
                 innerColor: const Color(0xFF1F3C88),
                 outerColor: const Color(0xFF2E44AF),
                 submittedIcon: const Icon(Icons.check),

@@ -19,20 +19,18 @@ class SleepStatsScreen extends StatelessWidget {
       final challengeErrors = records.fold(0, (a, b) => a + b.challengeErrors);
       double rawScore = (sleepHours >= 7 ? 100 : (sleepHours / 7) * 100) - (challengeErrors * 5);
       final performanceScore = rawScore.clamp(0, 100);
-    
     final tips = [
       "Evitá pantallas al menos 30 minutos antes de dormir",
       "Cená ligero y al menos 2h antes de acostarte",
       "Usá sonidos relajantes para conciliar el sueño",
     ];
-  
 
     return Scaffold(
-      backgroundColor: Color(0xFF141414),
+      backgroundColor: const Color(0xFF141414),
       appBar: AppBar(
-        backgroundColor: Color(0xFF141414),
-        title: Center(
-          child: const Text(
+        backgroundColor: const Color(0xFF141414),
+        title: const Center(
+          child: Text(
             'Resumen💤',
             style: TextStyle(color: Colors.white, fontFamily: "JoseFinSans-Regular"),
           ),

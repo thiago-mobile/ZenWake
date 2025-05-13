@@ -200,6 +200,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+
               const SizedBox(height: 20),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -215,6 +216,17 @@ class _MyHomePageState extends State<MyHomePage> {
                       width: 10), // Espacio entre la hora y la ciudad
                   Text(
                     _weather?.cityName ?? '', // Ciudad actual
+                    style: GoogleFonts.aBeeZee(
+                      color: Color(0xFFFFFFFF),
+                      fontSize: 20,
+                    ),
+                  ),
+                  const SizedBox(
+                      width: 10), // Espacio entre la hora y la ciudad
+                  Text(
+                    _weather != null
+                        ? '${_weather!.temperature.toStringAsFixed(1)}°C | ${_weather!.mainCondition}'
+                        : 'Cargando clima...',
                     style: GoogleFonts.aBeeZee(
                       color: Color(0xFFFFFFFF),
                       fontSize: 20,

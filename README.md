@@ -1,16 +1,20 @@
-# app_passo
+## ZenWake
 
-A new Flutter project.
+application to help users wake up and help them start the day with the weather, news, etc.
 
-## Getting Started
+# About ZenWake
 
-This project is a starting point for a Flutter application.
+In this recent project, I delved into key concepts of mobile development while creating a smart alarm app in Flutter. The goal wasn't just to make the app work, but also to understand and apply real-world tools used in modern apps.
 
-A few resources to get you started if this is your first Flutter project:
+# Technologies
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+This app is an excellent opportunity to practice integrating external services, handling JSON responses, and dynamically updating information within the app.
+It includes features such as:
+• State management with Provider, ChangeNotifier, Listeners, and setState.
+• Integration with device sensors for wake-up challenges.
+• Use of the OpenWeatherAPI as practice for integrating external APIs.
+• Logging and analyzing data such as sleep time and performance.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+https://github.com/user-attachments/assets/c0a15817-2ff6-4c3d-b50d-d2623005a4b1
+
+# ![home]([https://github.com/user-attachments/assets/175beaf0-1543-41f8-97f7-6fae68515f9d](https://www.canva.com/design/DAGnYGs0SBQ/6lghbyHnB23TEwfUH9bAgw/view?utm_content=DAGnYGs0SBQ&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=ha8a545f9e3))

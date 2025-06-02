@@ -15,6 +15,8 @@ It includes features such as:
 • Use of the OpenWeatherAPI as practice for integrating external APIs.
 • Logging and analyzing data such as sleep time and performance.
 
-https://github.com/user-attachments/assets/c0a15817-2ff6-4c3d-b50d-d2623005a4b1
 
-# ![home]([https://github.com/user-attachments/assets/175beaf0-1543-41f8-97f7-6fae68515f9d](https://www.canva.com/design/DAGnYGs0SBQ/6lghbyHnB23TEwfUH9bAgw/view?utm_content=DAGnYGs0SBQ&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=ha8a545f9e3))
+
+https://github.com/user-attachments/assets/6c68196a-8bb2-4270-bef2-5ee4451f2456
+
+# ![Portfolio ZenWake]([https://github.com/user-attachments/assets/175beaf0-1543-41f8-97f7-6fae68515f9d](https://www.canva.com/design/DAGnYGs0SBQ/6lghbyHnB23TEwfUH9bAgw/view?utm_content=DAGnYGs0SBQ&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=ha8a545f9e3))
